@@ -1,0 +1,39 @@
+# Environment variables - NEVER commit these
+.env
+*.env
+.env.*
+
+# Virtual environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# Python build artifacts
+*.egg-info/
+dist/
+build/
+*.spec
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+frontend/.next/
+frontend/build/
+
+# SQLite database files
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+
+# OS
+.DS_Store
+Thumbs.db
