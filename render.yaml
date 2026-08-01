@@ -3,14 +3,21 @@ services:
   - type: web
     name: pymentor-backend
     env: python
-    rootDir: backend
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "pip install -r backend/requirements.txt"
     startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.0
+      - key: PYTHONPATH
+        value: /opt/render/project/src/backend
       - key: GROQ_API_KEY
         sync: false # You will paste your API key in the Render dashboard
+      - key: MODEL
+        sync: false
+      - key: MAX_TOKENS
+        value: "4096"
+      - key: TEMPERATURE
+        value: "0.7"
 
   # FRONTEND SERVICE (React + Vite)
   - type: web
