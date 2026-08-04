@@ -1,12 +1,15 @@
 {
   "name": "frontend",
+  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "tsc && vite build",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",

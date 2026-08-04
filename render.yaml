@@ -3,31 +3,19 @@ services:
   - type: web
     name: pymentor-backend
     env: python
-    buildCommand: "pip install -r backend/requirements.txt"
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt"
     startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.0
-      - key: PYTHONPATH
-        value: /opt/render/project/src/backend
       - key: GROQ_API_KEY
-        sync: false # You will paste your API key in the Render dashboard
+        sync: false   # Paste your API key in the Render dashboard
       - key: MODEL
-        sync: false
+        value: "llama-3.3-70b-versatile"
       - key: MAX_TOKENS
         value: "4096"
       - key: TEMPERATURE
         value: "0.7"
-
-  # FRONTEND SERVICE (React + Vite)
-  - type: web
-    name: pymentor-frontend
-    env: static
-    buildCommand: "cd frontend && npm install && npm run build"
-    staticPublishPath: "./frontend/dist"
-    envVars:
-      - key: VITE_API_URL
-        fromService:
-          type: web
-          name: pymentor-backend
-          envVarKey: RENDER_EXTERNAL_URL
+      - key: CORS_ORIGINS
+        sync: false   # Set to: https://YOUR_GITHUB_USERNAME.github.io

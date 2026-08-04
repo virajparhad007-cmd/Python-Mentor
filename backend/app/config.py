@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
+from typing import Optional
 
 
 class Settings(BaseSettings):
@@ -17,8 +18,15 @@ class Settings(BaseSettings):
     # DB
     db_path: str = "pymentor.db"
 
-    # CORS
-    cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    # CORS — set CORS_ORIGINS env var as a comma-separated list for production
+    # e.g. CORS_ORIGINS=https://username.github.io,https://yourdomain.com
+    cors_origins_str: Optional[str] = None
+
+    @property
+    def cors_origins(self) -> list[str]:
+        if self.cors_origins_str:
+            return [o.strip() for o in self.cors_origins_str.split(",") if o.strip()]
+        return ["http://localhost:5173", "http://127.0.0.1:5173"]
 
 
 @lru_cache
