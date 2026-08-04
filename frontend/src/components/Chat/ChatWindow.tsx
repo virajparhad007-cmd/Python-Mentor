@@ -4,7 +4,7 @@ import { MessageBubble } from './MessageBubble';
 import { InputBar } from './InputBar';
 import { TypingIndicator } from './TypingIndicator';
 import type { ChatMessage, StreamStatus } from '../../types';
-import { Bot, Sparkles, Code2, Bug, Lightbulb } from 'lucide-react';
+import { Sparkles, Code2, Bug, Lightbulb } from 'lucide-react';
 
 interface ChatWindowProps {
   messages: ChatMessage[];
@@ -38,7 +38,7 @@ export function ChatWindow({ messages, status, onSend, onStop }: ChatWindowProps
         {messages.length === 0 ? (
           <div className="welcome-screen">
             <div className="welcome-logo">
-              <Bot size={48} />
+              <img src="/python-logo.svg" alt="Python Logo" width={72} height={72} style={{ filter: 'drop-shadow(0 4px 16px rgba(54,105,148,0.4))' }} />
             </div>
             <h1 className="welcome-title">PyMentor AI</h1>
             <p className="welcome-subtitle">

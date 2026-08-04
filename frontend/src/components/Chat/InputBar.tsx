@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, KeyboardEvent } from 'react';
+import { useState, useRef, useCallback, useEffect, KeyboardEvent } from 'react';
 import { Send, Square } from 'lucide-react';
 import type { StreamStatus } from '../../types';
 
@@ -13,6 +13,18 @@ export function InputBar({ onSend, onStop, status }: InputBarProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isStreaming = status === 'streaming';
 
+  // Auto-focus on mount
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
+
+  // Re-focus when streaming ends (after AI finishes responding)
+  useEffect(() => {
+    if (!isStreaming) {
+      setTimeout(() => textareaRef.current?.focus(), 0);
+    }
+  }, [isStreaming]);
+
   const handleSend = useCallback(() => {
     const text = value.trim();
     if (!text || isStreaming) return;
@@ -21,6 +33,8 @@ export function InputBar({ onSend, onStop, status }: InputBarProps) {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
+    // Defer focus so React finishes re-render first
+    setTimeout(() => textareaRef.current?.focus(), 0);
   }, [value, isStreaming, onSend]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -51,7 +65,7 @@ export function InputBar({ onSend, onStop, status }: InputBarProps) {
           onInput={handleInput}
           disabled={isStreaming}
           rows={1}
-          maxLength={8000}
+          maxLength={32000}
           aria-label="Message input"
         />
         <button

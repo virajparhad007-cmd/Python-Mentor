@@ -28,7 +28,7 @@ async def init_db() -> None:
                 id          INTEGER PRIMARY KEY CHECK (id = 1),
                 model       TEXT NOT NULL DEFAULT 'llama-3.3-70b-versatile',
                 temperature REAL NOT NULL DEFAULT 0.7,
-                max_tokens  INTEGER NOT NULL DEFAULT 4096,
+                max_tokens  INTEGER NOT NULL DEFAULT 32768,
                 theme       TEXT NOT NULL DEFAULT 'dark',
                 font_size   TEXT NOT NULL DEFAULT 'medium'
             );

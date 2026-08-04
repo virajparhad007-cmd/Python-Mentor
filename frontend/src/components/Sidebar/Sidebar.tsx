@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getHistory } from '../../lib/api';
 import { ConversationItem } from './ConversationItem';
-import { Plus, History, Settings, Info, Bot, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, History, Settings, Info, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { ConversationSummary } from '../../types';
 
 interface SidebarProps {
@@ -51,7 +51,7 @@ export function Sidebar({ activeConvId, onNewChat, onSelectConv }: SidebarProps)
       <div className="sidebar-header">
         {!collapsed && (
           <div className="sidebar-brand">
-            <Bot size={22} className="brand-icon" />
+            <img src="/python-logo.svg" alt="Python" width={26} height={26} style={{ flexShrink: 0, filter: 'drop-shadow(0 2px 6px rgba(54,105,148,0.35))' }} />
             <span className="brand-name">PyMentor</span>
           </div>
         )}
