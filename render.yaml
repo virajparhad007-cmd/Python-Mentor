@@ -18,4 +18,4 @@ services:
       - key: TEMPERATURE
         value: "0.7"
       - key: CORS_ORIGINS
-        sync: false   # Set to: https://virajparhad007-cmd.github.io
+        sync: false   # Value: https://pymentor-frontend.onrender.com
