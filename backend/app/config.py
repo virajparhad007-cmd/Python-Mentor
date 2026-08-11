@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from functools import lru_cache
+from pydantic import Field
 from typing import Optional
 
 
@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     # Google Gemini API
-    gemini_api_key: str = ""
+    gemini_api_key: str = Field(default="", validation_alias="GEMINI_API_KEY")
     model: str = "gemini-3.6-flash"
 
     # Generation defaults
@@ -32,7 +32,7 @@ class Settings(BaseSettings):
         ]
 
 
-@lru_cache
 def get_settings() -> Settings:
+    """Always create a fresh Settings instance so env vars are always current."""
     return Settings()
 
