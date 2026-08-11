@@ -3,7 +3,7 @@ import asyncio
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from app.models import ChatRequest
-from app.services import grok as grok_service
+from app.services import gemini as gemini_service
 from app.services import history as history_service
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
@@ -48,7 +48,7 @@ async def chat(request: ChatRequest):
     async def event_generator():
         full_response: list[str] = []
         try:
-            async for token in grok_service.stream_chat(
+            async for token in gemini_service.stream_chat(
                 messages=messages_payload,
                 model=request.model,
                 temperature=request.temperature,

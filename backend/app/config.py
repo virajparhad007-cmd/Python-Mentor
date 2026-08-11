@@ -4,12 +4,11 @@ from typing import Optional
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    # Groq API (OpenAI-compatible)
-    groq_api_key: str = ""
-    groq_base_url: str = "https://api.groq.com/openai/v1"
-    model: str = "llama-3.3-70b-versatile"
+    # Google Gemini API
+    gemini_api_key: str = ""
+    model: str = "gemini-3.6-flash"
 
     # Generation defaults
     temperature: float = 0.7

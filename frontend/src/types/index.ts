@@ -41,10 +41,10 @@ export interface ChatRequest {
 export type StreamStatus = 'idle' | 'streaming' | 'error';
 
 export const AVAILABLE_MODELS = [
-  { id: 'llama-3.3-70b-versatile', label: 'Llama 3.3 70B' },
-  { id: 'llama-3.1-8b-instant', label: 'Llama 3.1 8B' },
-  { id: 'meta-llama/llama-4-scout-17b-16e-instruct', label: 'Llama 4 Scout' },
-  { id: 'mixtral-8x7b-32768', label: 'Mixtral 8x7B' },
+  { id: 'gemini-3.6-flash', label: 'Gemini 3.6 Flash ⚡' },
+  { id: 'gemini-3.5-flash', label: 'Gemini 3.5 Flash' },
+  { id: 'gemini-3.5-flash-lite', label: 'Gemini 3.5 Flash Lite' },
+  { id: 'gemini-3.5-pro', label: 'Gemini 3.5 Pro' },
 ];
 
 export const FONT_SIZES = [

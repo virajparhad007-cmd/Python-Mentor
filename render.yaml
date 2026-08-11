@@ -9,13 +9,13 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.0
-      - key: GROQ_API_KEY
-        sync: false   # Paste your API key in the Render dashboard
+      - key: GEMINI_API_KEY
+        sync: false   # Paste your Gemini API key in the Render dashboard
       - key: MODEL
-        value: "llama-3.3-70b-versatile"
+        value: "gemini-3.6-flash"
       - key: MAX_TOKENS
         value: "4096"
       - key: TEMPERATURE
         value: "0.7"
       - key: CORS_ORIGINS
-        sync: false   # Value: https://pymentor-frontend.onrender.com
+        sync: false   # Value: https://python-mentor-chi.vercel.app
