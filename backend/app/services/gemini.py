@@ -1,3 +1,4 @@
+import os
 import google.generativeai as genai
 from app.config import get_settings
 from typing import AsyncGenerator
@@ -14,15 +15,16 @@ SYSTEM_PROMPT = (
 
 
 def _configure_genai() -> None:
-    """Configure the Gemini client with the API key."""
-    settings = get_settings()
-    api_key = settings.gemini_api_key
+    """Configure the Gemini client with the API key from environment."""
+    # Read directly from os.environ to bypass any pydantic-settings caching issues
+    api_key = os.environ.get("GEMINI_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError(
             "GEMINI_API_KEY is not set. "
             "Add it to your .env file locally, or set it as an environment variable on Render."
         )
     genai.configure(api_key=api_key)
+
 
 
 async def stream_chat(
