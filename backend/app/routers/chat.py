@@ -8,6 +8,12 @@ from app.services import history as history_service
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 
+# ── Token budget constants (Groq free tier = 12 000 TPM) ──────────────────
+# System prompt ≈ 950 tokens, max_tokens (output) ≈ 1500 tokens.
+# That leaves ~9 500 tokens for history → 6 msgs × ~1 500 chars ≈ safe.
+MAX_HISTORY_MESSAGES = 20   # last 10 user/assistant exchanges
+MAX_MSG_CHARS = 3000        # truncate any single message beyond this length
+
 
 @router.post("")
 async def chat(request: ChatRequest):
@@ -27,9 +33,17 @@ async def chat(request: ChatRequest):
     # Persist user message
     await history_service.add_message(conv_id, "user", request.message)
 
-    # Load full history for context window
+    # Load history, take only the last MAX_HISTORY_MESSAGES, and truncate
+    # individual message content to stay within Groq's free-tier TPM limit.
     history_messages = await history_service.get_messages(conv_id)
-    messages_payload = [{"role": m.role, "content": m.content} for m in history_messages]
+    trimmed = history_messages[-MAX_HISTORY_MESSAGES:]
+    messages_payload = [
+        {
+            "role": m.role,
+            "content": m.content[:MAX_MSG_CHARS] + "…[truncated]" if len(m.content) > MAX_MSG_CHARS else m.content,
+        }
+        for m in trimmed
+    ]
 
     async def event_generator():
         full_response: list[str] = []

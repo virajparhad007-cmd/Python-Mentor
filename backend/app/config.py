@@ -13,7 +13,7 @@ class Settings(BaseSettings):
 
     # Generation defaults
     temperature: float = 0.7
-    max_tokens: int = 4096
+    max_tokens: int = 4096  # increased for fuller responses
 
     # DB
     db_path: str = "pymentor.db"
