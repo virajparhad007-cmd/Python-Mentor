@@ -44,3 +44,17 @@ app.include_router(settings_router)
 @app.get("/", tags=["health"])
 async def health():
     return {"status": "ok", "service": "PyMentor AI", "version": "1.0.0"}
+
+
+@app.get("/debug/env", tags=["debug"])
+async def debug_env():
+    """Temporary debug endpoint - shows env var status (not values)."""
+    import os
+    key = os.environ.get("GEMINI_API_KEY", "")
+    return {
+        "GEMINI_API_KEY_is_set": bool(key),
+        "GEMINI_API_KEY_length": len(key),
+        "GEMINI_API_KEY_first_4": key[:4] if key else "empty",
+        "MODEL": os.environ.get("MODEL", "NOT SET"),
+        "CORS_ORIGINS": os.environ.get("CORS_ORIGINS", "NOT SET"),
+    }
