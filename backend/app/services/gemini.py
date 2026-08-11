@@ -2,8 +2,6 @@ import google.generativeai as genai
 from app.config import get_settings
 from typing import AsyncGenerator
 
-settings = get_settings()
-
 SYSTEM_PROMPT = (
     "You are PyMentor AI, an expert Python tutor. "
     "Answer ONLY Python-related questions (syntax, OOP, async, testing, FastAPI, Flask, Django, "
@@ -17,7 +15,14 @@ SYSTEM_PROMPT = (
 
 def _configure_genai() -> None:
     """Configure the Gemini client with the API key."""
-    genai.configure(api_key=settings.gemini_api_key)
+    settings = get_settings()
+    api_key = settings.gemini_api_key
+    if not api_key:
+        raise RuntimeError(
+            "GEMINI_API_KEY is not set. "
+            "Add it to your .env file locally, or set it as an environment variable on Render."
+        )
+    genai.configure(api_key=api_key)
 
 
 async def stream_chat(
@@ -31,6 +36,7 @@ async def stream_chat(
     Prepends the Python-only system prompt automatically.
     """
     _configure_genai()
+    settings = get_settings()
 
     model_name = model or settings.model
     temp = temperature if temperature is not None else settings.temperature
