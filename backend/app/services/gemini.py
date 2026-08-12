@@ -13,6 +13,19 @@ SYSTEM_PROMPT = (
     "Be concise, educational, and provide working production-quality code."
 )
 
+# Valid Gemini models supported by the generateContent API
+VALID_GEMINI_MODELS = {
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b",
+    "gemini-1.5-pro",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite",
+    "gemini-2.0-flash-exp",
+    "gemini-2.5-flash",
+    "gemini-2.5-pro",
+}
+DEFAULT_MODEL = "gemini-1.5-flash"
+
 
 def _configure_genai() -> None:
     """Configure the Gemini client with the API key from environment."""
@@ -40,7 +53,11 @@ async def stream_chat(
     _configure_genai()
     settings = get_settings()
 
-    model_name = model or settings.model
+    # Sanitize model — fall back to default if it's not a valid Gemini model
+    raw_model = model or settings.model
+    if raw_model not in VALID_GEMINI_MODELS:
+        raw_model = DEFAULT_MODEL
+    model_name = raw_model
     temp = temperature if temperature is not None else settings.temperature
     max_tok = max_tokens or settings.max_tokens
 

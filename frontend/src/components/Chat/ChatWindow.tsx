@@ -42,7 +42,7 @@ export function ChatWindow({ messages, status, onSend, onStop }: ChatWindowProps
             </div>
             <h1 className="welcome-title">PyMentor AI</h1>
             <p className="welcome-subtitle">
-              Your expert Python tutor — powered by Grok
+              Your expert Python tutor — powered by Gemini
             </p>
             <div className="suggestions-grid">
               {SUGGESTIONS.map((s, i) => (

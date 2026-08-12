@@ -3,7 +3,7 @@ import { getSettings, saveSettings } from '../lib/api';
 import type { UserSettings } from '../types';
 
 const DEFAULT_SETTINGS: UserSettings = {
-  model: 'llama-3.3-70b-versatile',
+  model: 'gemini-1.5-flash',
   temperature: 0.7,
   max_tokens: 4096,
   theme: 'dark',

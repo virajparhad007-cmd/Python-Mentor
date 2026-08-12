@@ -8,7 +8,7 @@ class Settings(BaseSettings):
 
     # Google Gemini API
     gemini_api_key: str = ""
-    model: str = "gemini-3.6-flash"
+    model: str = "gemini-1.5-flash"
 
     # Generation defaults
     temperature: float = 0.7
