@@ -1,5 +1,6 @@
 import os
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from app.config import get_settings
 from typing import AsyncGenerator
 
@@ -13,31 +14,30 @@ SYSTEM_PROMPT = (
     "Be concise, educational, and provide working production-quality code."
 )
 
-# Valid Gemini models supported by the generateContent API
+# Valid Gemini models supported by this API key
 VALID_GEMINI_MODELS = {
-    "gemini-1.5-flash",
-    "gemini-1.5-flash-8b",
-    "gemini-1.5-pro",
-    "gemini-2.0-flash",
-    "gemini-2.0-flash-lite",
-    "gemini-2.0-flash-exp",
     "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
     "gemini-2.5-pro",
+    "gemini-3.5-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-3.6-flash",
+    "gemini-flash-latest",
+    "gemini-flash-lite-latest",
+    "gemini-pro-latest",
 }
-DEFAULT_MODEL = "gemini-1.5-flash"
+DEFAULT_MODEL = "gemini-3.6-flash"
 
 
-def _configure_genai() -> None:
-    """Configure the Gemini client with the API key from environment."""
-    # Read directly from os.environ to bypass any pydantic-settings caching issues
+def _get_client() -> genai.Client:
+    """Create a Gemini client with the API key from environment."""
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError(
             "GEMINI_API_KEY is not set. "
             "Add it to your .env file locally, or set it as an environment variable on Render."
         )
-    genai.configure(api_key=api_key)
-
+    return genai.Client(api_key=api_key)
 
 
 async def stream_chat(
@@ -49,42 +49,44 @@ async def stream_chat(
     """
     Async generator that yields text chunks from the Gemini streaming API.
     Prepends the Python-only system prompt automatically.
+    Uses the new google-genai SDK (v1 API endpoint).
     """
-    _configure_genai()
+    client = _get_client()
     settings = get_settings()
 
-    # Sanitize model — fall back to default if it's not a valid Gemini model
+    # Sanitize model — fall back to default if not a valid Gemini model
     raw_model = model or settings.model
     if raw_model not in VALID_GEMINI_MODELS:
         raw_model = DEFAULT_MODEL
     model_name = raw_model
+
     temp = temperature if temperature is not None else settings.temperature
     max_tok = max_tokens or settings.max_tokens
 
-    # Build Gemini-format conversation history (exclude system prompt from history)
-    gemini_history = []
+    # Build conversation history in google-genai format
+    contents: list[types.Content] = []
     for msg in messages[:-1]:  # all but the last (current) user message
         role = "user" if msg["role"] == "user" else "model"
-        gemini_history.append({"role": role, "parts": [msg["content"]]})
+        contents.append(
+            types.Content(role=role, parts=[types.Part(text=msg["content"])])
+        )
 
-    # The last message is the current user turn
+    # Add the current user message
     current_message = messages[-1]["content"] if messages else ""
+    contents.append(
+        types.Content(role="user", parts=[types.Part(text=current_message)])
+    )
 
-    gemini_model = genai.GenerativeModel(
-        model_name=model_name,
+    config = types.GenerateContentConfig(
         system_instruction=SYSTEM_PROMPT,
-        generation_config=genai.GenerationConfig(
-            temperature=temp,
-            max_output_tokens=max_tok,
-        ),
+        temperature=temp,
+        max_output_tokens=max_tok,
     )
 
-    chat_session = gemini_model.start_chat(history=gemini_history)
-
-    response = await chat_session.send_message_async(
-        current_message, stream=True
-    )
-
-    async for chunk in response:
+    async for chunk in await client.aio.models.generate_content_stream(
+        model=model_name,
+        contents=contents,
+        config=config,
+    ):
         if chunk.text:
             yield chunk.text
